@@ -1,23 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Login from './components/Login';
+import TaskList from './components/TaskList';
+
+import ProtectedRoute from './components/ProtectedRoute';
+import LogoutButton from './components/LogoutButton';
+
+import "./App.css";
 
 function App() {
+  const [taskUpdated, setTaskUpdated] = useState(false);
+
+  const handleTaskAdded = () => {
+    setTaskUpdated(prev => !prev); // Trigger a re-render
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route 
+          path="/tasks" 
+          element={
+            <ProtectedRoute>
+              <TaskList key={taskUpdated} />
+              <LogoutButton />
+            </ProtectedRoute>
+          } 
+        />
+        <Route path="/" element={<Login />} />
+      </Routes>
     </div>
   );
 }
